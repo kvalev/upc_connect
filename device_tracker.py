@@ -12,7 +12,7 @@ from homeassistant.components.device_tracker import (
     PLATFORM_SCHEMA as PARENT_PLATFORM_SCHEMA,
     DeviceScanner,
 )
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
@@ -20,12 +20,21 @@ from homeassistant.helpers.typing import ConfigType
 
 _LOGGER = logging.getLogger(__name__)
 
+CONF_LEGACY_MODE = "legacy_mode"
+CONF_ENCRYPT_PASSWORD = "encrypt_password"
+
 DEFAULT_IP = "192.168.0.1"
+DEFAULT_USERNAME = "admin"
+DEFAULT_LEGACY_MODE = True
+DEFAULT_ENCRYPT_PASSWORD = True
 
 PLATFORM_SCHEMA = PARENT_PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_PASSWORD): cv.string,
         vol.Optional(CONF_HOST, default=DEFAULT_IP): cv.string,
+        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
+        vol.Optional(CONF_LEGACY_MODE, default=DEFAULT_LEGACY_MODE): cv.boolean,
+        vol.Optional(CONF_ENCRYPT_PASSWORD, default=DEFAULT_ENCRYPT_PASSWORD): cv.boolean,
     }
 )
 
@@ -36,15 +45,23 @@ async def async_get_scanner(
     """Return the UPC device scanner."""
     conf = config[DOMAIN]
     session = async_get_clientsession(hass)
-    connect_box = ConnectBox(session, conf[CONF_PASSWORD], host=conf[CONF_HOST])
+    connect_box = ConnectBox(
+        session,
+        conf[CONF_PASSWORD],
+        host=conf[CONF_HOST],
+        username=conf[CONF_USERNAME],
+        use_token=conf[CONF_LEGACY_MODE],
+        encrypt_password=conf[CONF_ENCRYPT_PASSWORD],
+    )
 
     # Check login data
     try:
         await connect_box.async_initialize_token()
-    except ConnectBoxLoginError:
-        _LOGGER.error("ConnectBox login data error!")
+    except ConnectBoxLoginError as err:
+        _LOGGER.error("ConnectBox login data error! %s", err)
         return None
-    except ConnectBoxError:
+    except ConnectBoxError as err:
+        _LOGGER.error("ConnectBox login error! %s", err)
         pass
 
     async def _shutdown(event):

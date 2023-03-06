@@ -1,9 +1,10 @@
 {
-  "domain": "upc_connect",
-  "name": "UPC Connect Box",
-  "codeowners": ["@pvizeli", "@fabaff"],
-  "documentation": "https://www.home-assistant.io/integrations/upc_connect",
+  "domain": "upc_connect_v2",
+  "name": "UPC Connect Box v2",
+  "version": "0.1.0",
+  "codeowners": ["@kvalev"],
+  "documentation": "https://github.com/kvalev/python-connect-box",
   "iot_class": "local_polling",
   "loggers": ["connect_box"],
-  "requirements": ["connect-box==0.2.8"]
+  "requirements": ["git+https://github.com/kvalev/python-connect-box.git@kvv-support-latest-version#connect_box==0.4.0"]
 }
