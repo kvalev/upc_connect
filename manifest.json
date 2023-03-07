@@ -3,7 +3,8 @@
   "name": "UPC Connect Box v2",
   "version": "0.1.0",
   "codeowners": ["@kvalev"],
-  "documentation": "https://github.com/kvalev/python-connect-box",
+  "documentation": "https://github.com/kvalev/upc_connect",
+  "issue_tracker": "https://github.com/kvalev/upc_connect/issues",
   "iot_class": "local_polling",
   "loggers": ["connect_box"],
   "requirements": ["git+https://github.com/kvalev/python-connect-box.git@kvv-support-latest-version#connect_box==0.4.0"]
