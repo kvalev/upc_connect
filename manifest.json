@@ -7,5 +7,5 @@
   "issue_tracker": "https://github.com/kvalev/upc_connect/issues",
   "iot_class": "local_polling",
   "loggers": ["connect_box"],
-  "requirements": ["git+https://github.com/kvalev/python-connect-box.git@ed498d2a5dd19e45e9df8cda90c1369bcbaf6827"]
+  "requirements": ["git+https://github.com/kvalev/python-connect-box.git@kvv-support-latest-version#connect_box==0.4.0"]
 }
